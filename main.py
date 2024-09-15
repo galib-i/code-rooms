@@ -20,6 +20,9 @@ def home():
 
 @app.route("/register/", methods=["GET", "POST"])
 def register():
+    if current_user.is_authenticated:
+        return redirect(url_for("home"))
+
     if request.method == "POST":
         username = request.form.get("username")
         email = request.form.get("email")
@@ -36,6 +39,9 @@ def register():
 
 @app.route("/login/", methods=["GET", "POST"])
 def login():
+    if current_user.is_authenticated:
+        return redirect(url_for('home'))
+
     if request.method == "POST":
         username = request.form.get("username")
         password_input = request.form.get("password")
@@ -43,14 +49,23 @@ def login():
 
         if user and user.check_password(password=password_input):
             login_user(user)
-            return redirect(url_for('home'))
+            return redirect(url_for("home"))
+        else:
+            return render_template("login.html", error="Error! Try again.")
 
-    return render_template("login.html", error="Error! Try again.")
+    return render_template("login.html")
 
 
 @login_manager.user_loader
 def load_user(username):
     return get_user(username)
+
+
+@app.route("/logout/")
+@login_required
+def logout():
+    logout_user()
+    return redirect(url_for("home"))
 
 
 if __name__ == "__main__":
