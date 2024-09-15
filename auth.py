@@ -4,7 +4,7 @@ from pymongo.errors import DuplicateKeyError
 
 from db_connection import save_user, get_user
 
-auth_bp = Blueprint('auth', __name__)
+auth_bp = Blueprint("auth", __name__)
 
 
 @auth_bp.route("/register/", methods=["GET", "POST"])
@@ -29,7 +29,7 @@ def register():
 @auth_bp.route("/login/", methods=["GET", "POST"])
 def login():
     if current_user.is_authenticated:
-        return redirect(url_for('home'))
+        return render_template(url_for("home"), user_is_authenticated=current_user.is_authenticated)
 
     if request.method == "POST":
         username = request.form.get("username")
