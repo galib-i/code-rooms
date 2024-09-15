@@ -3,6 +3,7 @@ from flask_socketio import SocketIO
 from flask_login import LoginManager
 
 from auth import auth_bp
+from rooms import rooms_bp
 from db_connection import get_user
 
 app = Flask(__name__)
@@ -13,6 +14,7 @@ login_manager.login_view = "auth.login"
 login_manager.init_app(app)
 
 app.register_blueprint(auth_bp)
+app.register_blueprint(rooms_bp)
 
 
 @app.route("/")
