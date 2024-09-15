@@ -1,6 +1,5 @@
 {% extends "base.html" %}
 {% block content %}
-<!-- component -->
 <div class="max-w-[280px] mx-auto">
     <div class="flex flex-col items-center mt-[10vh]">
         <h2 class="mb-5 text-gray-900 font-mono font-bold text-xl">Sign In</h2>
@@ -17,16 +16,6 @@
         <p class="text-center mt-3 text-[14px]">Don't have an account? 
             <a href="{{url_for('register')}}" class="text-gray-600">Register</a>
         </p>
-    </div>
-</div>
-
-<div class="flex justify-center items-center h-screen">
-    <div>
-        <form method="POST" action="/login">
-            <input type="text" name="username" placeholder="Username">
-            <input type="password" name="password" placeholder="Password">
-            <input type="submit" value="Sign In">
-        </form>
     </div>
 </div>
 {% endblock %}
