@@ -11,8 +11,12 @@ class User:
     def is_authenticated():
         return True
 
+    @staticmethod
+    def is_active():
+        return True
+
     def get_id(self):
         return self.username
 
     def check_password(self, password):
-        return check_password_hash(pwash=self.password, password=password)
+        return check_password_hash(pwhash=self.password, password=password)
