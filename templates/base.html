@@ -4,9 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/static/css/main.css">
-    <title>Document</title>
+    <title></title>
 </head>
 <body>
+    {% if current_user.is_authenticated %}
+    <form method="GET" action="/logout">
+        <div class="flex justify-end">
+            <button class="mt-2 mr-2 bg-slate-500 hover:bg-slate-700 text-white text-base rounded-lg py-2.5 px-5 transition-colors text-[19px]">
+              Sign Out
+            </button>
+          </div>
+    </form>
+    {% endif %}
     {% block content %}{% endblock %}
 </body>
 </html>
