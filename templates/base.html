@@ -7,15 +7,15 @@
     <title></title>
 </head>
 <body>
-    {% if current_user.is_authenticated %}
-    <form method="GET" action="/logout">
-        <div class="flex justify-end">
-            <button class="mt-2 mr-2 bg-slate-500 hover:bg-slate-700 text-white text-base rounded-lg py-2.5 px-5 transition-colors text-[19px]">
-              Sign Out
-            </button>
-          </div>
-    </form>
-    {% endif %}
+  {% if not (request.endpoint == 'auth.login' or request.endpoint == 'auth.register') %}
+  <form method="GET" action="{{ url_for('auth.login' if not current_user.is_authenticated else 'auth.logout') }}">
+    <div class="relative">
+      <button class="absolute top-0 right-0 mt-2 mr-2 bg-slate-500 hover:bg-slate-700 text-white rounded-lg py-2.5 px-5">
+        {{ 'Sign In/Register' if not current_user.is_authenticated else 'Sign Out' }}
+      </button>
+    </div>
+  </form>
+{% endif %}
     {% block content %}{% endblock %}
 </body>
 </html>
