@@ -7,7 +7,7 @@
     <title></title>
 </head>
 <body>
-  {% if not (request.endpoint == 'auth.login' or request.endpoint == 'auth.register') %}
+  {% if request.endpoint == "home"%}
   <form method="GET" action="{{url_for('auth.login' if not current_user.is_authenticated else 'auth.logout')}}">
     <div class="relative">
       <button class="absolute top-0 right-0 mt-2 mr-2 bg-slate-500 hover:bg-slate-700 text-white rounded-lg py-2.5 px-5">

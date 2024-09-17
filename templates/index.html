@@ -7,7 +7,7 @@
       Hey {{user}}. Want to code with others?
     </h1>
     <div class="flex flex-col space-y-3 md:flex-row md:space-x-2 md:space-y-0">
-      <a href="{{url_for('rooms.create_room') if logged_in else url_for('auth.login')}}"
+      <a href="{{url_for('rooms.view_room') if logged_in else url_for('auth.login')}}"
          class="bg-slate-500 hover:bg-slate-700 text-white text-base rounded-lg py-2.5 px-5 transition-colors w-full text-[19px] text-center">
         Create a Room
       </a>
