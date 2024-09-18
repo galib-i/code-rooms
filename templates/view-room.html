@@ -4,12 +4,24 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <div class="h-screen flex w-4/5 relative">
     <div id="editor" contenteditable="true" class="h-full w-1/2"></div>
-    <div id="output" class="h-full w-1/2 bg-gray-950"></div>
-    <button class="absolute top-2 right-2 bg-slate-500 hover:bg-slate-700 text-white text-base rounded-lg py-2.5 px-5 transition-colors text-[19px]">Run</button>
-</div>
+    <div id="output" class="h-full w-1/2 bg-gray-950 text-white whitespace-pre-wrap break-words font-mono fon"></div>
+    <button id="run" class="absolute top-2 right-2 bg-slate-500 hover:bg-slate-700 text-white text-base rounded-lg py-2.5 px-5 transition-colors text-[19px]">Run</button>
+
 <script>
     var editor = ace.edit("editor");
     editor.setTheme("ace/theme/twilight");
     editor.session.setMode("ace/mode/python");
-</script>
+    editor.setFontSize(16);
+
+    $("#run").click(function() {
+            $.post({
+                url: "{{url_for('rooms.run_code')}}",
+                contentType: "application/json",
+                data: JSON.stringify({code: editor.getValue()}),
+                success: function(response) {
+                    $("#output").text(response.output);
+                }
+            });
+        });
+    </script>
 {% endblock %}
