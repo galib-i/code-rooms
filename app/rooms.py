@@ -8,10 +8,10 @@ from flask_login import login_required
 rooms_bp = Blueprint("rooms", __name__)
 
 
-@rooms_bp.route("/view-room/", methods=["GET"])
+@rooms_bp.route("/open-room/", methods=["GET"])
 @login_required
-def view_room():
-    return render_template("view-room.html")
+def open_room():
+    return render_template("open-room.html")
 
 
 @rooms_bp.route("/run-code", methods=["POST"])

@@ -27,6 +27,7 @@ def create_app():
 
     return app
 
+
 @login_manager.user_loader
 def load_user(username):
     return get_user(username)
