@@ -2,12 +2,13 @@
 {% block content %}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.36.2/ace.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.5/socket.io.js"></script>
 <div class="h-screen flex w-full relative">
     <div class="flex w-4/5">
         <div id="editor" contenteditable="true" class="h-full w-1/2"></div>
         <div id="output" class="h-full w-1/2 bg-gray-950 text-white whitespace-pre-wrap break-words font-mono"></div>
     </div>
-    <div class="w-1/5 flex items-start ml-4 pt-2" >
+    <div class="w-1/5 flex items-start ml-4 pt-2">
         <button id="run" class="bg-slate-500 hover:bg-slate-700 text-white text-base rounded-lg py-1 px-5 transition-colors text-[19px] mr-2">Run</button>
         <p class="pt-1">Room Code: {{room_code}}</p>
     </div>
@@ -18,15 +19,30 @@
     editor.session.setMode("ace/mode/python");
     editor.setFontSize(16);
 
+    var socket = io.connect("http://" + document.domain + ":" + location.port);
+    var isRemoteChange = false;
+
+    editor.on("change", function() {
+        if (!isRemoteChange) socket.emit("code_update", {code: editor.getValue()});
+    });
+
+    socket.on("update_editor", function(data) {
+        if (editor.getValue() !== data.code) {
+            isRemoteChange = true;
+            editor.setValue(data.code, -1);
+            isRemoteChange = false;
+        }
+    });
+
     $("#run").click(function() {
-            $.post({
-                url: "{{url_for('rooms.run_code')}}",
-                contentType: "application/json",
-                data: JSON.stringify({code: editor.getValue()}),
-                success: function(response) {
-                    $("#output").text(response.output);
-                }
-            });
+        $.post({
+            url: "{{url_for('rooms.run_python_code')}}",
+            contentType: "application/json",
+            data: JSON.stringify({code: editor.getValue()}),
+            success: function(response) {
+                $("#output").text(response.output);
+            }
         });
-    </script>
+    });
+</script>
 {% endblock %}
