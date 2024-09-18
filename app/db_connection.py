@@ -27,3 +27,12 @@ def get_user(username):
 
 def save_room(room_code, owner):
     rooms.insert_one({"_id": room_code, "owner": owner})
+    room_members.insert_one({"room_code": room_code, "username": owner})
+
+
+def get_room(room_code):
+    return rooms.find_one({"_id": room_code})
+
+
+def get_room_members(room_code):
+    return list(room_members.find({"room_code": room_code}))

@@ -2,11 +2,16 @@
 {% block content %}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.36.2/ace.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-<div class="h-screen flex w-4/5 relative">
-    <div id="editor" contenteditable="true" class="h-full w-1/2"></div>
-    <div id="output" class="h-full w-1/2 bg-gray-950 text-white whitespace-pre-wrap break-words font-mono fon"></div>
-    <button id="run" class="absolute top-2 right-2 bg-slate-500 hover:bg-slate-700 text-white text-base rounded-lg py-2.5 px-5 transition-colors text-[19px]">Run</button>
-
+<div class="h-screen flex w-full relative">
+    <div class="flex w-4/5">
+        <div id="editor" contenteditable="true" class="h-full w-1/2"></div>
+        <div id="output" class="h-full w-1/2 bg-gray-950 text-white whitespace-pre-wrap break-words font-mono"></div>
+    </div>
+    <div class="w-1/5 flex items-start ml-4 pt-2" >
+        <button id="run" class="bg-slate-500 hover:bg-slate-700 text-white text-base rounded-lg py-1 px-5 transition-colors text-[19px] mr-2">Run</button>
+        <p class="pt-1">Room Code: {{room_code}}</p>
+    </div>
+</div>
 <script>
     var editor = ace.edit("editor");
     editor.setTheme("ace/theme/twilight");
