@@ -2,14 +2,14 @@
 {% block content %}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.36.2/ace.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-<div class="h-1/2 w-3/4 float-left">
-    <div id="editor" contenteditable="true"></div>
+<div class="h-screen flex w-4/5 relative">
+    <div id="editor" contenteditable="true" class="h-full w-1/2"></div>
+    <div id="output" class="h-full w-1/2 bg-gray-950"></div>
+    <button class="absolute top-2 right-2 bg-slate-500 hover:bg-slate-700 text-white text-base rounded-lg py-2.5 px-5 transition-colors text-[19px]">Run</button>
 </div>
-
-
 <script>
     var editor = ace.edit("editor");
-    editor.setTheme("ace/theme/github");
+    editor.setTheme("ace/theme/twilight");
     editor.session.setMode("ace/mode/python");
 </script>
 {% endblock %}
