@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 from pymongo import MongoClient
 from werkzeug.security import generate_password_hash
 
-from user import User
+from app.user import User
 
 load_dotenv()
 client = MongoClient(os.getenv("URI"))

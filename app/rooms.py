@@ -15,6 +15,7 @@ def view_room():
 
 
 @rooms_bp.route("/run-code", methods=["POST"])
+@login_required
 def run_code():
     code = request.json.get("code")
     old_stdout = sys.stdout

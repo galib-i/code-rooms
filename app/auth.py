@@ -2,7 +2,7 @@ from flask import Blueprint, render_template, url_for, request, redirect
 from flask_login import login_user, login_required, logout_user, current_user
 from pymongo.errors import DuplicateKeyError
 
-from db_connection import save_user, get_user
+from app.db_connection import save_user, get_user
 
 auth_bp = Blueprint("auth", __name__)
 
