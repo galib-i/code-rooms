@@ -29,6 +29,10 @@ def create_app():
     def handle_code_update(data):
         emit('update_editor', {'code': data['code']}, broadcast=True)
 
+    @socketio.on('output_update')
+    def handle_output_update(data):
+        emit('update_output', {'output': data['output']}, broadcast=True)
+
     return app
 
 

@@ -5,7 +5,7 @@ from io import StringIO
 from flask import Blueprint, render_template, request, jsonify, redirect, url_for
 from flask_login import login_required, current_user
 
-from .db_connection import save_room, get_room, get_room_members
+from .db_connection import save_room, get_room, get_room_members, add_room_member
 rooms_bp = Blueprint("rooms", __name__)
 
 
@@ -22,6 +22,7 @@ def generate_code():
 @rooms_bp.route("/open-room/", methods=["GET"])
 @login_required
 def open_room():
+    """Create a new room and redirect the owner to the room page"""
     code = generate_code()
     save_room(room_code=code, owner=current_user.username)
 
@@ -31,26 +32,32 @@ def open_room():
 @rooms_bp.route("/room/<code>", methods=["GET"])
 @login_required
 def open_room_code(code):
-    if current_user.username != get_room(code)["owner"]:
+    room = get_room(code)
+    if not room:
         return redirect(url_for("home"))
+
+    if current_user.username != room["owner"]:
+        members = [member["username"] for member in get_room_members(code)]
+        if current_user.username not in members:
+            return redirect(url_for("home"))
+
     return render_template("open-room.html", room_code=code)
 
 
-@rooms_bp.route("/join-room/", methods=["GET"])
+@rooms_bp.route("/join-room/", methods=["GET", "POST"])
 @login_required
 def join_room():
-    return render_template("join-room.html")
-
-
-@rooms_bp.route("/join-room/<code>", methods=["GET"])
-@login_required
-def join_room_with_code(code):
-    if get_room(code)["_id"]:
-        members = [member["username"] for member in get_room_members(code)]
-        if current_user.username in members:
+    if request.method == "POST":
+        code = request.form.get("room-code")
+        try:
+            get_room(code)["_id"]
+            add_room_member(room_code=code, username=current_user.username)
             return redirect(url_for("rooms.open_room_code", code=code))
 
-    return redirect(url_for("home"))
+        except TypeError:
+            return render_template("join-room.html", error="Room not found!")
+
+    return render_template("join-room.html")
 
 
 @rooms_bp.route("/run-python-code", methods=["POST"])
