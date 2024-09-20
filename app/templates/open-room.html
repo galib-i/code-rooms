@@ -47,5 +47,16 @@
             }
         });
     });
+
+    $("#delete").click(function() {
+        $.post({
+            url: "{{url_for('rooms.delete_current_room')}}",
+            contentType: "application/json",
+            data: JSON.stringify({room_code: "{{room_code}}"}),
+            success: function() {
+                window.location.href = "/";
+            }
+        });
+    });
 </script>
 {% endblock %}

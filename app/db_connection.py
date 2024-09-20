@@ -32,6 +32,11 @@ def save_room(room_code, owner):
     add_room_member(room_code=room_code, username=owner)
 
 
+def delete_room(room_code):
+    rooms.delete_one({"_id": room_code})
+    room_members.delete_many({"room_code": room_code})
+
+
 def get_room(room_code):
     return rooms.find_one({"_id": room_code})
 

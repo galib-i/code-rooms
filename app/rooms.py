@@ -5,7 +5,7 @@ from io import StringIO
 from flask import Blueprint, render_template, request, jsonify, redirect, url_for
 from flask_login import login_required, current_user
 
-from .db_connection import save_room, get_room, get_room_members, add_room_member
+from .db_connection import save_room, delete_room, get_room, get_room_members, add_room_member
 
 rooms_bp = Blueprint("rooms", __name__)
 
@@ -67,6 +67,17 @@ def join_room():
     if request.method == "POST":
         return handle_join_request()
     return render_template("join-room.html")
+
+
+@rooms_bp.route("/delete-room/", methods=["POST"])
+@login_required
+def delete_current_room():
+    """Allows the owner to delete the current room"""
+    room_code = request.json.get("room_code")
+    if current_user.username == get_room(room_code)["owner"]:
+        delete_room(room_code)
+
+    return jsonify({})
 
 
 @rooms_bp.route("/run-python-code", methods=["POST"])
