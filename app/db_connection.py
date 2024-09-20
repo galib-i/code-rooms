@@ -37,7 +37,8 @@ def get_room(room_code):
 
 
 def get_room_members(room_code):
-    return list(room_members.find({"room_code": room_code}))
+    """Returns a list of usernames of the members of the room"""
+    return [member["username"] for member in room_members.find({"room_code": room_code})]
 
 
 def add_room_member(room_code, username):
