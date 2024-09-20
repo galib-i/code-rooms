@@ -1,12 +1,11 @@
 from flask import Flask, render_template
-from flask_socketio import SocketIO, emit
 from flask_login import LoginManager, current_user
 from .auth import auth_bp
 from .rooms import rooms_bp
-from .code_editor import code_editor_bp
+from .code_editor import socketio, code_editor_bp
 from .db_connection import get_user
 
-socketio = SocketIO()
+
 login_manager = LoginManager()
 
 
@@ -26,10 +25,6 @@ def create_app():
     def home():
         username = current_user.username if current_user.is_authenticated else "there"
         return render_template("index.html", logged_in=current_user.is_authenticated, user=username)
-
-    @socketio.on("code_update")
-    def handle_code_update(data):
-        emit("update_editor", {"code": data["code"]}, broadcast=True)
 
     return app
 

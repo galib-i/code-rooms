@@ -2,8 +2,10 @@ import sys
 from io import StringIO
 
 from flask import Blueprint, jsonify, request
+from flask_socketio import SocketIO, emit
 from flask_login import login_required
 
+socketio = SocketIO()
 code_editor_bp = Blueprint("code_editor", __name__)
 
 
@@ -26,3 +28,8 @@ def run_python_code():
         sys.stdout = old_stdout
 
     return jsonify({"output": output})
+
+
+@socketio.on("code_update")
+def handle_code_update(data):
+    emit("update_editor", {"code": data["code"]}, broadcast=True)
