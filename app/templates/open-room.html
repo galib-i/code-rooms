@@ -8,9 +8,12 @@
         <div id="editor" contenteditable="true" class="h-full w-1/2"></div>
         <div id="output" class="h-full w-1/2 bg-gray-950 text-white whitespace-pre-wrap break-words font-mono"></div>
     </div>
-    <div class="w-1/5 flex items-start ml-4 pt-2">
-        <button id="run" class="bg-slate-500 hover:bg-slate-700 text-white text-base rounded-lg py-1 px-5 transition-colors text-[19px] mr-2">Run</button>
-        <p class="pt-1">Room Code: {{room_code}}</p>
+    <div class="w-1/5 flex flex-col items-start ml-2 mr-2 pt-2">
+        <input type="text" name="room_code" value="Room Code: {{room_code}}" class="w-full px-6 py-3 mb-2 border border-slate-600 rounded-lg font-medium" readonly/>
+        <div class="flex w-full">
+            <button id="run" class="bg-green-700 hover:bg-green-900 text-white text-base rounded-lg py-1 px-5 transition-colors text-[19px] mr-2 w-full">Run</button>
+            <button id="delete" class="bg-red-700 hover:bg-red-900 text-white text-base rounded-lg py-1 px-5 transition-colors text-[19px] w-full">Delete Room</button>
+        </div>
     </div>
 </div>
 <script>

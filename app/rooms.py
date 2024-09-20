@@ -31,6 +31,18 @@ def redirect_to_room(code):
     return render_template("open-room.html", room_code=code)
 
 
+def handle_join_request():
+    """Handles the POST request for join_room()"""
+    code = request.form.get("room-code")
+    if get_room(code):
+        if current_user.username not in get_room_members(code):
+            add_room_member(room_code=code, username=current_user.username)
+
+        return redirect(url_for("rooms.open_room_code", code=code))
+
+    return render_template("join-room.html", error="Room not found!")
+
+
 @rooms_bp.route("/open-room/", methods=["GET"])
 @login_required
 def open_room():
@@ -46,16 +58,6 @@ def open_room():
 def open_room_code(code):
     """If the room code is valid, opens the room page"""
     return redirect_to_room(code)
-
-
-def handle_join_request():
-    """Handles the POST request for join_room()"""
-    code = request.form.get("room-code")
-    if get_room(code):
-        if current_user.username not in get_room_members(code):
-            add_room_member(room_code=code, username=current_user.username)
-        return redirect(url_for("rooms.open_room_code", code=code))
-    return render_template("join-room.html", error="Room not found!")
 
 
 @rooms_bp.route("/join-room/", methods=["GET", "POST"])
