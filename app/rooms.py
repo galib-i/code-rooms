@@ -3,7 +3,7 @@ import random
 from flask import Blueprint, render_template, request, jsonify, redirect, url_for
 from flask_login import login_required, current_user
 
-from .db_connection import save_room, delete_room, get_room, get_room_members, add_room_member
+from .database import save_room, delete_room, get_room, get_room_members, add_room_member, get_members_rooms
 
 rooms_bp = Blueprint("rooms", __name__)
 
@@ -66,7 +66,20 @@ def join_room():
     if request.method == "POST":
         return handle_join_request()
 
-    return render_template("join-room.html")
+    rooms = []
+    data = get_members_rooms(current_user.username)
+    joined_room_codes = [room["room_code"] for room in data]
+
+    for code in joined_room_codes:
+        room_info = get_room(code)
+
+        is_owner = current_user.username == room_info["owner"]
+        members = get_room_members(code)
+
+        room = {"code": code, "members": members, "is_owner": is_owner}
+        rooms.append(room)
+
+    return render_template("join-room.html", rooms=rooms)
 
 
 @rooms_bp.route("/delete-room/", methods=["POST"])

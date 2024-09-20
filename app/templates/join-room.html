@@ -12,4 +12,31 @@
         <button class="bg-slate-500 hover:bg-slate-700 text-white text-base rounded-lg py-2.5 px-5 transition-colors w-full text-[19px]">Join</button>
     </form>
 </div>
+{% if rooms %}
+<div class="max-w-[280px] mx-auto flex flex-col items-center mt-[10vh]">
+    <h2 class="mb-5 text-gray-900 font-mono font-bold text-xl">My Rooms</h2>
+</div>
+<section id="Rooms" class="w-fit mx-auto grid grid-cols-1 lg:grid-cols-4 md:grid-cols-2 justify-items-center gap-y-10 gap-x-10 mt-10 mb-5">
+    {% for room in rooms %}
+    <div class="w-72 bg-white border border-slate-600 rounded-xl" style="max-height: 200px;">
+        <a href="{{url_for('rooms.open_room_code', code=room.code)}}">
+            <div class="px-4 py-3 flex justify-between items-center">
+                <span class="text-slate-500 uppercase font-mono">Code: {{room.code}}</span>
+                {% if room.is_owner %}
+                <span class="text-green-500 uppercase font-bold font-mono">Owner</span>
+                {% endif %}
+            </div>
+            <div class="px-4 py-3">
+                <p class="text-lg text-gray-900 truncate font-bold font-mono">Members ({{ room.members | length }}):</p>
+                <ul class="flex flex-row space-x-4">
+                    {% for member in room.members %}
+                    <li>{{member}}{% if not loop.last %}, {% endif %}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </a>
+    </div>
+    {% endfor %}
+</section>
+{% endif %}
 {% endblock %}

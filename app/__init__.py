@@ -1,18 +1,19 @@
 from flask import Flask, render_template
 from flask_login import LoginManager, current_user
-from .auth import auth_bp
+
+from .authentication import auth_bp
 from .rooms import rooms_bp
 from .code_editor import socketio, code_editor_bp
-from .db_connection import get_user
+from .database import get_user
 
 
 login_manager = LoginManager()
 
 
 def create_app():
+    """Creates a Flask app and initialises the socketio instance"""
     app = Flask(__name__)
     app.config["SECRET_KEY"] = "secret!"
-
     socketio.init_app(app)
     login_manager.login_view = "auth.login"
     login_manager.init_app(app)

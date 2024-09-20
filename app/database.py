@@ -41,6 +41,10 @@ def get_room(room_code):
     return rooms.find_one({"_id": room_code})
 
 
+def get_members_rooms(username):
+    return room_members.find({"username": username})
+
+
 def get_room_members(room_code):
     """Returns a list of usernames of the members of the room"""
     return [member["username"] for member in room_members.find({"room_code": room_code})]
