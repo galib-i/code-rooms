@@ -6,4 +6,3 @@ TODO:
 - Chat feature
 - fix output not being synced
 - fix other rooms being synced together
-- move secret_key to .env

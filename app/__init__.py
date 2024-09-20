@@ -1,3 +1,6 @@
+import os
+
+from dotenv import load_dotenv
 from flask import Flask, render_template
 from flask_login import LoginManager, current_user
 
@@ -13,7 +16,8 @@ login_manager = LoginManager()
 def create_app():
     """Creates a Flask app and initialises the socketio instance"""
     app = Flask(__name__)
-    app.config["SECRET_KEY"] = "secret!"
+    app.config["SECRET_KEY"] = os.getenv("SECRET_KEY")
+
     socketio.init_app(app)
     login_manager.login_view = "auth.login"
     login_manager.init_app(app)
