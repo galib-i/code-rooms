@@ -3,6 +3,7 @@ from flask_socketio import SocketIO, emit
 from flask_login import LoginManager, current_user
 from .auth import auth_bp
 from .rooms import rooms_bp
+from .code_editor import code_editor_bp
 from .db_connection import get_user
 
 socketio = SocketIO()
@@ -19,19 +20,16 @@ def create_app():
 
     app.register_blueprint(auth_bp)
     app.register_blueprint(rooms_bp)
+    app.register_blueprint(code_editor_bp)
 
     @app.route("/")
     def home():
         username = current_user.username if current_user.is_authenticated else "there"
         return render_template("index.html", logged_in=current_user.is_authenticated, user=username)
 
-    @socketio.on('code_update')
+    @socketio.on("code_update")
     def handle_code_update(data):
-        emit('update_editor', {'code': data['code']}, broadcast=True)
-
-    @socketio.on('output_update')
-    def handle_output_update(data):
-        emit('update_output', {'output': data['output']}, broadcast=True)
+        emit("update_editor", {"code": data["code"]}, broadcast=True)
 
     return app
 

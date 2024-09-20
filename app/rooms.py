@@ -1,6 +1,4 @@
-import sys
 import random
-from io import StringIO
 
 from flask import Blueprint, render_template, request, jsonify, redirect, url_for
 from flask_login import login_required, current_user
@@ -28,7 +26,8 @@ def redirect_to_room(code):
 
         return redirect(url_for("home"))
 
-    return render_template("open-room.html", room_code=code)
+    is_owner = current_user.username == room["owner"]
+    return render_template("open-room.html", room_code=code, is_owner=is_owner)
 
 
 def handle_join_request():
@@ -66,6 +65,7 @@ def join_room():
     """Allows a user to join a room using the room code"""
     if request.method == "POST":
         return handle_join_request()
+
     return render_template("join-room.html")
 
 
@@ -78,24 +78,3 @@ def delete_current_room():
         delete_room(room_code)
 
     return jsonify({})
-
-
-@rooms_bp.route("/run-python-code", methods=["POST"])
-@login_required
-def run_python_code():
-    """Runs the Python code in the editor and return the output"""
-    code = request.json.get("code")
-    old_stdout = sys.stdout
-    redirected_output = StringIO()
-    sys.stdout = redirected_output
-
-    try:
-        exec(code)
-    except Exception as e:
-        output = str(e)
-    else:
-        output = redirected_output.getvalue()
-    finally:
-        sys.stdout = old_stdout
-
-    return jsonify({"output": output})

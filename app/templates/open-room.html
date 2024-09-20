@@ -12,7 +12,7 @@
         <input type="text" name="room_code" value="Room Code: {{room_code}}" class="w-full px-6 py-3 mb-2 border border-slate-600 rounded-lg font-medium" readonly/>
         <div class="flex w-full">
             <button id="run" class="bg-green-700 hover:bg-green-900 text-white text-base rounded-lg py-1 px-5 transition-colors text-[19px] mr-2 w-full">Run</button>
-            <button id="delete" class="bg-red-700 hover:bg-red-900 text-white text-base rounded-lg py-1 px-5 transition-colors text-[19px] w-full">Delete Room</button>
+            <button id="delete" class="{% if not is_owner %}bg-gray-500 cursor-not-allowed{% else %}bg-red-700 hover:bg-red-900{% endif %} text-white text-base rounded-lg py-1 px-5 transition-colors text-[19px] w-full" {% if not is_owner %}disabled{% endif %}>Delete Room</button>
         </div>
     </div>
 </div>
@@ -39,7 +39,7 @@
 
     $("#run").click(function() {
         $.post({
-            url: "{{url_for('rooms.run_python_code')}}",
+            url: "{{url_for('code_editor.run_python_code')}}",
             contentType: "application/json",
             data: JSON.stringify({code: editor.getValue()}),
             success: function(response) {
