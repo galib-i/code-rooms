@@ -11,6 +11,7 @@ from .database import get_user
 
 
 login_manager = LoginManager()
+load_dotenv()
 
 
 def create_app():
