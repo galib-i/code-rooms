@@ -9,13 +9,13 @@ rooms_bp = Blueprint("rooms", __name__)
 
 
 def generate_unique_room_code():
-    """Generates a random 5-digit code as the room ID"""
+    """Creates a random 5-digit code as the room_code when creating a room"""
     while True:
         random_number = random.randint(0, 99999)
-        code = f"{random_number:05d}"  # pads with zeros if >5 digits
+        new_code = f"{random_number:05d}"  # pads with zeros if >5 digits
 
-        if not get_room(code):
-            return code
+        if not get_room(room_code=new_code):
+            return new_code
 
 
 def redirect_to_room(code):

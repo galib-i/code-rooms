@@ -3,6 +3,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.36.2/ace.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.5/socket.io.js"></script>
+
 <div class="h-screen flex w-full relative">
     <div class="flex w-4/5">
         <div id="editor" contenteditable="true" class="h-full w-1/2"></div>
@@ -21,6 +22,7 @@
         </div>
     </div>
 </div>
+
 <script>
     var editor = ace.edit("editor");
     editor.setTheme("ace/theme/twilight");
@@ -31,7 +33,12 @@
     var isRemoteChange = false;
 
     editor.on("change", function() {
-        if (!isRemoteChange) socket.emit("editor_code_update", { code: editor.getValue() });
+        if (!isRemoteChange) {
+            socket.emit("editor_code_update", { 
+                code: editor.getValue(),
+                room_code: "{{room_code}}"
+            });
+        }
     });
 
     socket.on("update_editor", function(data) {
@@ -65,12 +72,11 @@
     });
 
     socket.on("chat_history", function(data) {
-    data.messages.forEach(function(message) {
-        var chatMessage = "<div><strong>" + message.username + ":</strong> " + message.message + "</div>";
-        $("#messages").append(chatMessage);
-    });
-
-    $("#messages").scrollTop($("#messages")[0].scrollHeight);
+        data.messages.forEach(function(message) {
+            var chatMessage = "<div><strong>" + message.username + ":</strong> " + message.message + "</div>";
+            $("#messages").append(chatMessage);
+        });
+        $("#messages").scrollTop($("#messages")[0].scrollHeight);
     });
 
     socket.on("join_room_announcement", function(data) {
@@ -104,8 +110,5 @@
         $("#messages").append(chatMessage);
         $("#messages").scrollTop($("#messages")[0].scrollHeight);
     });
-
-
 </script>
-
 {% endblock %}

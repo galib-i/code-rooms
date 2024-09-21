@@ -35,7 +35,8 @@ def run_python_code():
 @socketio.on("editor_code_update")
 def handle_editor_code_update(data):
     """Broadcasts the updated code to all users in the room"""
-    emit("update_editor", {"code": data["code"]}, broadcast=True)
+    room_code = data["room_code"]
+    emit("update_editor", {"code": data["code"]}, room=room_code)
 
 
 @socketio.on("join_room")
