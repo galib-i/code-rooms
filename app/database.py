@@ -7,13 +7,13 @@ from werkzeug.security import generate_password_hash
 from app.user import User
 
 load_dotenv()
-client = MongoClient(os.getenv("URI"))
+client = MongoClient(os.getenv("URI"))  # store in .env file as URI=".."
+db = client.get_database(os.getenv("DB_NAME"))  # store in .env file as DB_NAME=".."
 
-db = client.get_database(os.getenv("DB_NAME"))
 users = db.get_collection("users")
 rooms = db.get_collection("rooms")
 room_members = db.get_collection("room_members")
-editor_code = db.get_collection("editor_code")
+editor_codes = db.get_collection("editor_codes")
 messages = db.get_collection("messages")
 
 
@@ -49,7 +49,7 @@ def get_room(room_code):
     """Checks if the room exists in the database
 
     Returns:
-        pymongo.cursor.Cursor or None: object with room code and owner username
+        pymongo.cursor.Cursor(obj) or None: object with room code and owner username
     """
     return rooms.find_one({"_id": room_code})
 
@@ -59,7 +59,7 @@ def get_joined_rooms(username):
     """Finds the rooms the user has joined
 
     Returns:
-        pymongo.cursor.Cursor or None: object with joined room codes
+        pymongo.cursor.Cursor(obj) or None: object with joined room codes
     """
     return room_members.find({"username": username})
 
