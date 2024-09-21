@@ -3,7 +3,7 @@ import random
 from flask import Blueprint, render_template, request, jsonify, redirect, url_for
 from flask_login import login_required, current_user
 
-from .database import save_room, delete_room, get_room, get_room_members, add_room_member, get_members_rooms
+from .database import save_room, delete_room, get_room, get_room_members, add_room_member, get_joined_rooms
 
 rooms_bp = Blueprint("rooms", __name__)
 
@@ -67,7 +67,7 @@ def join_room():
         return handle_join_request()
 
     rooms = []
-    data = get_members_rooms(current_user.username)
+    data = get_joined_rooms(current_user.username)
     joined_room_codes = [room["room_code"] for room in data]
 
     for code in joined_room_codes:
