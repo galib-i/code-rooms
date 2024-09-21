@@ -42,3 +42,9 @@ def handle_editor_code_update(data):
 def handle_join_room_event(data):
     join_room(data["room_id"])
     emit("join_room_announcement", data, room=data["room_id"])
+
+
+@socketio.on("leave_room")
+def handle_leave_room_event(data):
+    leave_room(data["room_id"])
+    emit("leave_room_announcement", data, room=data["room_id"])

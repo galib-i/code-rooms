@@ -71,5 +71,17 @@
     });
 
     socket.emit("join_room", { room_id: "{{room_code}}", username: "{{current_user.username}}" });
+
+    window.addEventListener("beforeunload", function (event) {
+    // Emit the leave_room event when the user is navigating away
+    socket.emit("leave_room", { room_id: "{{room_code}}", username: "{{current_user.username}}" });
+    });
+
+    socket.on("leave_room_announcement", function(data) {
+    var announcement = "<div><em>" + data.username + " has left the room</em></div>";
+    $("#messages").append(announcement);
+    $("#messages").scrollTop($("#messages")[0].scrollHeight);
+    });
+
 </script>
 {% endblock %}
