@@ -85,3 +85,19 @@ def save_message(room_code, sender, text):
 def get_messages(room_code):
     """Returns a list of messages in the room"""
     return list(messages.find({"room_code": room_code}))
+
+
+# Functions related to the editor
+def save_editor_code(room_code, editor_code, output):
+    """Stores the code in the database"""
+    editor_codes.replace_one(
+        {"_id": room_code}, {"_id": room_code, "code": editor_code, "output": output}, upsert=True)
+
+
+def get_editor_code(room_code):
+    """Returns the code and output from the database"""
+    editor_data = editor_codes.find_one({"_id": room_code})
+    code = editor_data["code"]
+    output = editor_data["output"]
+
+    return code, output

@@ -52,7 +52,7 @@ def login():
     if request.method == "POST":
         username = request.form.get("username")
         password_input = request.form.get("password")
-        user = get_user(username)
+        user = get_user(username=username)
 
         if user and user.check_password(password=password_input):
             login_user(user)

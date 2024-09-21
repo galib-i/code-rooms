@@ -1,11 +1,11 @@
 import sys
 from io import StringIO
 
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, request
 from flask_socketio import SocketIO, emit, join_room, leave_room
 from flask_login import login_required, current_user
 
-from .database import save_message, get_messages
+from .database import save_message, get_messages, save_editor_code, get_editor_code
 
 socketio = SocketIO()
 workspace_bp = Blueprint("workspace", __name__)
@@ -30,7 +30,6 @@ def handle_run_code(data):
     finally:
         sys.stdout = old_stdout
 
-    # Broadcast the output to the room
     emit("code_output", {"output": output}, room=room_code)
 
 
@@ -45,9 +44,10 @@ def handle_editor_code_update(data):
 def handle_join_room_event(data):
     """Connects the user to the specified room and announces it"""
     join_room(data["room_code"])
-
     chat_history = get_messages(data["room_code"])
     chat_data = [{"username": message["sender"], "message": message["text"]} for message in chat_history]
+    editor_code, output = get_editor_code(data["room_code"])
+    emit("load_editor_code", {"code": editor_code, "output": output}, room=request.sid)
     emit("chat_history", {"messages": chat_data}, room=request.sid)
     emit("join_room_announcement", data, room=data["room_code"])
 
@@ -55,6 +55,8 @@ def handle_join_room_event(data):
 @socketio.on("leave_room")
 def handle_leave_room_event(data):
     """Disconnects the user from the specified room and announces it"""
+    room_code = data["room_code"]
+    save_editor_code(room_code, data["editor_code"], data["output"])
     leave_room(data["room_code"])
     emit("leave_room_announcement", data, room=data["room_code"])
 

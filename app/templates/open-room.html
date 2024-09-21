@@ -87,8 +87,18 @@
 
     socket.emit("join_room", { room_code: "{{room_code}}", username: "{{current_user.username}}" });
 
+    socket.on("load_editor_code", function(data) {
+        editor.setValue(data.code);
+        $("#output").text(data.output);
+    });
+
     window.addEventListener("beforeunload", function(event) {
-        socket.emit("leave_room", { room_code: "{{room_code}}", username: "{{current_user.username}}" });
+        socket.emit("leave_room", {
+            room_code: "{{room_code}}",
+            editor_code: editor.getValue(),
+            output: $("#output").text(),
+            username: "{{current_user.username}}"
+        });
     });
 
     socket.on("leave_room_announcement", function(data) {
