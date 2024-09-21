@@ -13,23 +13,25 @@ workspace_bp = Blueprint("workspace", __name__)
 
 @workspace_bp.route("/run-python-code", methods=["POST"])
 @login_required
-def run_python_code():
-    """Runs the Python code in the editor and return the output"""
-    code = request.json.get("code")
+@socketio.on("run_code")
+def handle_run_code(data):
+    """Executes Python code and broadcasts the output to all users in the room"""
+    code = data.get("code")
+    room_code = data.get("room_code")
     old_stdout = sys.stdout
     redirected_output = StringIO()
     sys.stdout = redirected_output
 
     try:
         exec(code)
+        output = redirected_output.getvalue()
     except Exception as e:
         output = str(e)
-    else:
-        output = redirected_output.getvalue()
     finally:
         sys.stdout = old_stdout
 
-    return jsonify({"output": output})
+    # Broadcast the output to the room
+    emit("code_output", {"output": output}, room=room_code)
 
 
 @socketio.on("editor_code_update")

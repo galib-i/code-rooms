@@ -10,14 +10,14 @@
         <div id="output" class="h-full w-1/2 bg-gray-950 text-white whitespace-pre-wrap break-words font-mono"></div>
     </div>
     <div class="w-1/5 flex flex-col items-start ml-2 mr-2 pt-2">
-        <input type="text" name="room_code" value="Room Code: {{room_code}}" class="w-full px-6 py-3 mb-2 border border-slate-600 rounded-lg font-medium" readonly/>
+        <input type="text" name="room_code" value="Room Code: {{room_code}}" class="w-full px-6 py-3 mb-2 border border-slate-600 rounded-lg font-medium" readonly />
         <div class="flex w-full">
             <button id="run" class="bg-green-700 hover:bg-green-900 text-white text-base rounded-lg py-1 px-5 transition-colors text-[19px] mr-2 w-full">Run</button>
             <button id="delete" class="{% if not is_owner %}bg-gray-500 cursor-not-allowed{% else %}bg-red-700 hover:bg-red-900{% endif %} text-white text-base rounded-lg py-1 px-5 transition-colors text-[19px] w-full" {% if not is_owner %}disabled{% endif %}>Delete Room</button>
         </div>
         <div id="chat" class="w-full flex flex-col flex-grow mt-4 mb-4">
             <div id="messages" class="flex-grow overflow-y-scroll border border-slate-600 rounded-lg p-2 mb-2 bg-white text-black"></div>
-            <input type="text" id="message_input" class="w-full px-4 py-2 border border-slate-600 rounded-lg mb-2" placeholder="Type a message..."/>
+            <input type="text" id="message_input" class="w-full px-4 py-2 border border-slate-600 rounded-lg mb-2" placeholder="Type a message..." />
             <button id="send" class="bg-blue-700 hover:bg-blue-900 text-white text-base rounded-lg py-1 px-5 transition-colors w-full">Send</button>
         </div>
     </div>
@@ -34,7 +34,7 @@
 
     editor.on("change", function() {
         if (!isRemoteChange) {
-            socket.emit("editor_code_update", { 
+            socket.emit("editor_code_update", {
                 code: editor.getValue(),
                 room_code: "{{room_code}}"
             });
@@ -50,14 +50,14 @@
     });
 
     $("#run").click(function() {
-        $.post({
-            url: "{{url_for('workspace.run_python_code')}}",
-            contentType: "application/json",
-            data: JSON.stringify({ code: editor.getValue() }),
-            success: function(response) {
-                $("#output").text(response.output);
-            }
+        socket.emit("run_code", {
+            code: editor.getValue(),
+            room_code: "{{room_code}}"
         });
+    });
+
+    socket.on("code_output", function(data) {
+        $("#output").text(data.output);
     });
 
     $("#delete").click(function() {
@@ -87,7 +87,7 @@
 
     socket.emit("join_room", { room_code: "{{room_code}}", username: "{{current_user.username}}" });
 
-    window.addEventListener("beforeunload", function (event) {
+    window.addEventListener("beforeunload", function(event) {
         socket.emit("leave_room", { room_code: "{{room_code}}", username: "{{current_user.username}}" });
     });
 
