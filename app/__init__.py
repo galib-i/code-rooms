@@ -6,7 +6,7 @@ from flask_login import LoginManager, current_user
 
 from .authentication import auth_bp
 from .rooms import rooms_bp
-from .code_editor import socketio, code_editor_bp
+from .workspace import socketio, workspace_bp
 from .database import get_user
 
 
@@ -25,7 +25,7 @@ def create_app():
 
     app.register_blueprint(auth_bp)
     app.register_blueprint(rooms_bp)
-    app.register_blueprint(code_editor_bp)
+    app.register_blueprint(workspace_bp)
 
     @app.route("/")
     def home():

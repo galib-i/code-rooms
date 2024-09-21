@@ -1,4 +1,5 @@
 import os
+from datetime import datetime
 
 from dotenv import load_dotenv
 from pymongo import MongoClient
@@ -13,7 +14,8 @@ db = client.get_database(os.getenv("DB_NAME"))
 users = db.get_collection("users")
 rooms = db.get_collection("rooms")
 room_members = db.get_collection("room_members")
-python_code = db.get_collection("python_code")
+editor_code = db.get_collection("editor_code")
+messages = db.get_collection("messages")
 
 
 def save_user(username, email, password):
@@ -54,6 +56,10 @@ def add_room_member(room_code, username):
     room_members.insert_one({"room_code": room_code, "username": username})
 
 
-def save_python_code(room_code, code):
+"""def save_python_code(room_code, code):
     python_code.update_one({"room_code": room_code}, {"$set": {"code": code}},
-                           upsert=True)
+                           upsert=True)"""
+
+
+def save_message(room_code, sender, text, sent_at):
+    messages.insert_one({"room_code": room_code, sender: sender, "text": text, "sent_at": datetime.now()})

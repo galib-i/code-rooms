@@ -31,7 +31,7 @@
     var isRemoteChange = false;
 
     editor.on("change", function() {
-        if (!isRemoteChange) socket.emit("code_update", {code: editor.getValue()});
+        if (!isRemoteChange) socket.emit("editor_code_update", { code: editor.getValue() });
     });
 
     socket.on("update_editor", function(data) {
@@ -44,9 +44,9 @@
 
     $("#run").click(function() {
         $.post({
-            url: "{{url_for('code_editor.run_python_code')}}",
+            url: "{{url_for('workspace.run_python_code')}}",
             contentType: "application/json",
-            data: JSON.stringify({code: editor.getValue()}),
+            data: JSON.stringify({ code: editor.getValue() }),
             success: function(response) {
                 $("#output").text(response.output);
             }
@@ -57,11 +57,19 @@
         $.post({
             url: "{{url_for('rooms.delete_current_room')}}",
             contentType: "application/json",
-            data: JSON.stringify({room_code: "{{room_code}}"}),
+            data: JSON.stringify({ room_code: "{{room_code}}" }),
             success: function() {
                 window.location.href = "/";
             }
         });
     });
+
+    socket.on("join_room_announcement", function(data) {
+        var announcement = "<div><em>" + data.username + " has joined the room</em></div>";
+        $("#messages").append(announcement);
+        $("#messages").scrollTop($("#messages")[0].scrollHeight);
+    });
+
+    socket.emit("join_room", { room_id: "{{room_code}}", username: "{{current_user.username}}" });
 </script>
 {% endblock %}
