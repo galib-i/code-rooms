@@ -64,16 +64,25 @@
         });
     });
 
+    socket.on("chat_history", function(data) {
+    data.messages.forEach(function(message) {
+        var chatMessage = "<div><strong>" + message.username + ":</strong> " + message.message + "</div>";
+        $("#messages").append(chatMessage);
+    });
+
+    $("#messages").scrollTop($("#messages")[0].scrollHeight);
+    });
+
     socket.on("join_room_announcement", function(data) {
         var announcement = "<div><em>" + data.username + " has joined the room</em></div>";
         $("#messages").append(announcement);
         $("#messages").scrollTop($("#messages")[0].scrollHeight);
     });
 
-    socket.emit("join_room", { room_id: "{{room_code}}", username: "{{current_user.username}}" });
+    socket.emit("join_room", { room_code: "{{room_code}}", username: "{{current_user.username}}" });
 
     window.addEventListener("beforeunload", function (event) {
-        socket.emit("leave_room", { room_id: "{{room_code}}", username: "{{current_user.username}}" });
+        socket.emit("leave_room", { room_code: "{{room_code}}", username: "{{current_user.username}}" });
     });
 
     socket.on("leave_room_announcement", function(data) {
@@ -85,7 +94,7 @@
     $("#send").click(function() {
         var message = $("#message_input").val();
         if (message.trim() !== "") {
-            socket.emit("send_message", { room_id: "{{room_code}}", message: message });
+            socket.emit("send_message", { room_code: "{{room_code}}", message: message });
             $("#message_input").val("");
         }
     });
@@ -95,6 +104,8 @@
         $("#messages").append(chatMessage);
         $("#messages").scrollTop($("#messages")[0].scrollHeight);
     });
+
+
 </script>
 
 {% endblock %}

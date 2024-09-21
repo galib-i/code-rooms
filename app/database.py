@@ -61,5 +61,10 @@ def add_room_member(room_code, username):
                            upsert=True)"""
 
 
-def save_message(room_code, sender, text, sent_at):
-    messages.insert_one({"room_code": room_code, sender: sender, "text": text, "sent_at": datetime.now()})
+def save_message(room_code, sender, text):
+    messages.insert_one({"room_code": room_code, "sender": sender, "text": text, "sent_at": datetime.now()})
+
+
+def get_messages(room_code):
+    """Returns a list of messages in the room"""
+    return list(messages.find({"room_code": room_code}))
