@@ -13,6 +13,11 @@ class User:
         """Checks if the user is logged in"""
         return True
 
+    @staticmethod
+    def is_active():
+        """Checks if the user is active - for Flask-Login session management"""
+        return True
+
     def get_id(self):
         """Returns the username - overrides method for Flask-Login"""
         return self.username
