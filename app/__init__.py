@@ -10,8 +10,8 @@ from .workspace import socketio, workspace_bp
 from .database import get_user
 
 
-login_manager = LoginManager()
 load_dotenv()
+login_manager = LoginManager()
 
 
 def create_app():
@@ -29,12 +29,17 @@ def create_app():
 
     @app.route("/")
     def home():
+        """Sets the default route for the home page"""
+        # if the user is logged in, displays their username in the greeting
         username = current_user.username if current_user.is_authenticated else "there"
-        return render_template("index.html", logged_in=current_user.is_authenticated, user=username)
+
+        return render_template("index.html", logged_in=current_user.is_authenticated,
+                               username=username)
 
     return app
 
 
 @login_manager.user_loader
 def load_user(username):
+    """Enables Flask-Login to load the current user"""
     return get_user(username)
