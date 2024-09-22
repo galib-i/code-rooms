@@ -3,7 +3,8 @@ import random
 from flask import Blueprint, render_template, request, jsonify, redirect, url_for
 from flask_login import login_required, current_user
 
-from .database import save_room, delete_room, get_room, get_room_members, add_room_member, get_joined_rooms
+from .database import (save_room, delete_room, get_room, get_room_members,
+                       add_room_member, get_joined_rooms)
 
 rooms_bp = Blueprint("rooms", __name__)
 
@@ -18,26 +19,26 @@ def generate_unique_room_code():
             return new_code
 
 
-def redirect_to_room(code):
+def redirect_to_room(room_code):
     """Redirects to the room page if the user is a member or owner"""
-    room = get_room(code)
+    room = get_room(room_code=room_code)
     if not room or (current_user.username != room["owner"]
-                    and current_user.username not in get_room_members(code)):
+                    and current_user.username not in get_room_members(room_code=room_code)):
 
         return redirect(url_for("home"))
 
     is_owner = current_user.username == room["owner"]
-    return render_template("open-room.html", room_code=code, is_owner=is_owner)
+    return render_template("open-room.html", room_code=room_code, is_owner=is_owner)
 
 
 def handle_join_request():
     """Handles the POST request for join_room()"""
-    code = request.form.get("room-code")
-    if get_room(code):
-        if current_user.username not in get_room_members(code):
-            add_room_member(room_code=code, username=current_user.username)
+    room_code = request.form.get("room-code")
+    if get_room(room_code=room_code):
+        if current_user.username not in get_room_members(room_code=room_code):
+            add_room_member(room_code=room_code, username=current_user.username)
 
-        return redirect(url_for("rooms.open_room_code", code=code))
+        return redirect(url_for("rooms.view_room", room_code=room_code))
 
     return render_template("join-room.html", error="Room not found!")
 
@@ -46,17 +47,17 @@ def handle_join_request():
 @login_required
 def open_room():
     """Creates a new room and redirects the owner to the room page"""
-    code = generate_unique_room_code()
-    save_room(room_code=code, owner=current_user.username)
+    new_code = generate_unique_room_code()
+    save_room(room_code=new_code, owner=current_user.username)
 
-    return redirect(url_for("rooms.open_room_code", code=code))
+    return redirect(url_for("rooms.view_room", room_code=new_code))
 
 
-@rooms_bp.route("/room/<code>", methods=["GET"])
+@rooms_bp.route("/room/<room_code>", methods=["GET"])
 @login_required
-def open_room_code(code):
+def view_room(room_code):
     """If the room code is valid, opens the room page"""
-    return redirect_to_room(code)
+    return redirect_to_room(room_code=room_code)
 
 
 @rooms_bp.route("/join-room/", methods=["GET", "POST"])
@@ -67,16 +68,16 @@ def join_room():
         return handle_join_request()
 
     rooms = []
-    data = get_joined_rooms(current_user.username)
+    data = get_joined_rooms(username=current_user.username)
     joined_room_codes = [room["room_code"] for room in data]
 
-    for code in joined_room_codes:
-        room_info = get_room(code)
+    for room_code in joined_room_codes:
+        room_info = get_room(room_code=room_code)
 
         is_owner = current_user.username == room_info["owner"]
-        members = get_room_members(code)
+        members = get_room_members(room_code=room_code)
 
-        room = {"code": code, "members": members, "is_owner": is_owner}
+        room = {"room_code": room_code, "members": members, "is_owner": is_owner}
         rooms.append(room)
 
     return render_template("join-room.html", rooms=rooms)
@@ -87,7 +88,7 @@ def join_room():
 def delete_current_room():
     """Allows the owner to delete the current room"""
     room_code = request.json.get("room_code")
-    if current_user.username == get_room(room_code)["owner"]:
+    if current_user.username == get_room(room_code=room_code)["owner"]:
         delete_room(room_code)
 
     return jsonify({})

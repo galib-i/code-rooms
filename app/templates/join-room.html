@@ -19,15 +19,15 @@
 <section id="Rooms" class="w-fit mx-auto grid grid-cols-1 lg:grid-cols-4 md:grid-cols-2 justify-items-center gap-y-10 gap-x-10 mt-10 mb-5">
     {% for room in rooms %}
     <div class="w-72 bg-white border border-slate-600 rounded-xl" style="max-height: 200px;">
-        <a href="{{url_for('rooms.open_room_code', code=room.code)}}">
+        <a href="{{url_for('rooms.view_room', room_code=room.room_code)}}">
             <div class="px-4 py-3 flex justify-between items-center">
-                <span class="text-slate-500 uppercase font-mono">Code: {{room.code}}</span>
+                <span class="text-slate-500 uppercase font-mono">Code: {{room.room_code}}</span>
                 {% if room.is_owner %}
                 <span class="text-green-500 uppercase font-bold font-mono">Owner</span>
                 {% endif %}
             </div>
             <div class="px-4 py-3">
-                <p class="text-lg text-gray-900 truncate font-bold font-mono">Members ({{ room.members | length }}):</p>
+                <p class="text-lg text-gray-900 truncate font-bold font-mono">Members ({{room.members | length}}):</p>
                 <ul class="flex flex-row space-x-4">
                     {% for member in room.members %}
                     <li>{{member}}{% if not loop.last %}, {% endif %}</li>

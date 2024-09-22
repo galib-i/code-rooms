@@ -97,7 +97,7 @@ def save_editor_code(room_code, editor_code, output):
 def get_editor_code(room_code):
     """Returns the code and output from the database"""
     editor_data = editor_codes.find_one({"_id": room_code})
-    code = editor_data["code"]
-    output = editor_data["output"]
+    code = editor_data["code"] if editor_data else ""
+    output = editor_data["output"] if editor_data else ""
 
     return code, output
