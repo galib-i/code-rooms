@@ -18,7 +18,8 @@ def handle_run_code(data):
     """Executes Python code and broadcasts the output to all users in the room"""
     editor_code = data.get("code")
     room_code = data.get("room_code")
-    old_stdout = sys.stdout
+    old_stdout = sys.stdout  # saves the current standard output
+    # redirects the output to a StringIO object to capture it
     redirected_output = StringIO()
     sys.stdout = redirected_output
 
@@ -26,7 +27,7 @@ def handle_run_code(data):
         exec(editor_code)
         output = redirected_output.getvalue()
     except Exception as e:
-        output = str(e)
+        output = str(e)  # if there's an error in the code, displays it as an output
     finally:
         sys.stdout = old_stdout
 
